@@ -9,7 +9,6 @@ Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive
 Source1:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt.tar.gz
 # Source1-md5:	d616dcc457a6ce69bed4af2ca08dfe0a
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
-BuildRequires:	docker
 BuildRequires:	git-core
 BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567
 BuildRequires:	golang
