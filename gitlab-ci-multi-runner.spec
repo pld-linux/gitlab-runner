@@ -24,7 +24,13 @@ integration service included with GitLab that coordinates the testing.
 %setup -qc
 mv gitlab-ci-multi-runner-*/{.??*,*} .
 
+install -d Godeps/_workspace/src/gitlab.com/gitlab-org
+ln -s ../../../../.. Godeps/_workspace/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner
+
 %build
+export GOPATH=$(pwd):$(pwd)/Godeps/_workspace
+
+go build
 
 %install
 rm -rf $RPM_BUILD_ROOT
