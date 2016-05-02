@@ -37,6 +37,8 @@ ln -s ../../../../.. Godeps/_workspace/src/gitlab.com/gitlab-org/gitlab-ci-multi
 
 mkdir -p out/docker
 ln -s %{SOURCE1} out/docker/prebuilt.tar.gz
+# touch, otherwise make rules would download it nevertheless
+touch out/docker/prebuilt.tar.gz
 
 %build
 export GOPATH=$(pwd):$(pwd)/Godeps/_workspace
