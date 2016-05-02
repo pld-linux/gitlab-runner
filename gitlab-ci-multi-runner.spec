@@ -40,8 +40,17 @@ ln -s %{SOURCE1} out/docker/prebuilt.tar.gz
 # touch, otherwise make rules would download it nevertheless
 touch out/docker/prebuilt.tar.gz
 
+# avoid docker being used even if executable found
+cat <<'EOF' > docker
+#!/bin/sh
+echo >&2 "No docker"
+exit 1
+EOF
+chmod a+rx docker
+
 %build
 export GOPATH=$(pwd):$(pwd)/Godeps/_workspace
+export PATH=$(pwd):$PATH
 
 %{__make} docker
 %gobuild
