@@ -1,3 +1,5 @@
+# the revision for images
+%define	revision	88fc806
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
 Version:	1.1.3
@@ -55,7 +57,7 @@ export PATH=$(pwd):$PATH
 %{__make} docker
 %{__make} version | tee version.txt
 
-LDFLAGS="-X main.NAME gitlab-ci-multi-runner -X main.VERSION %{version} -X main.REVISION release"
+LDFLAGS="-X main.NAME gitlab-ci-multi-runner -X main.VERSION %{version} -X main.REVISION %{revision}"
 %gobuild
 
 # verify version match
