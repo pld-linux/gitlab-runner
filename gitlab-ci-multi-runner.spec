@@ -1,11 +1,11 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
-Version:	1.1.0
+Version:	1.1.3
 Release:	1
 License:	GPL v3
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	4145931bc59d40e32df6ee24e15a19d3
+# Source0-md5:	3ce0499c2ee0bca486dcdaf1bb01d2d1
 Source1:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt.tar.gz
 # Source1-md5:	d616dcc457a6ce69bed4af2ca08dfe0a
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
