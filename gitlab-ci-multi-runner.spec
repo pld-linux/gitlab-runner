@@ -51,6 +51,11 @@ EOF
 chmod a+rx docker
 
 %build
+# check that the revision is correct
+tar xvf out/docker/prebuilt.tar.gz repositories
+revision=$(sed -rne 's/.*"gitlab-runner-build":\{"([^"]+)":.*/\1/p' repositories)
+test "$revision" = %{revision}
+
 export GOPATH=$(pwd):$(pwd)/Godeps/_workspace
 export PATH=$(pwd):$PATH
 
