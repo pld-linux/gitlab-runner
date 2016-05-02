@@ -53,7 +53,14 @@ export GOPATH=$(pwd):$(pwd)/Godeps/_workspace
 export PATH=$(pwd):$PATH
 
 %{__make} docker
+%{__make} version | tee version.txt
+
+LDFLAGS="-X main.NAME gitlab-ci-multi-runner -X main.VERSION %{version} -X main.REVISION release"
 %gobuild
+
+# verify version match
+./gitlab-ci-multi-runner-%{version} -v > v
+grep 'version %{version} ' v
 
 %install
 rm -rf $RPM_BUILD_ROOT
