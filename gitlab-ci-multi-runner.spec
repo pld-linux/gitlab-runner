@@ -3,7 +3,7 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
 Version:	1.1.3
-Release:	1
+Release:	2
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
@@ -73,7 +73,9 @@ grep 'version %{version} ' v
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_bindir}
-install -p %{name}-%{version} $RPM_BUILD_ROOT%{_bindir}/%{name}
+install -p %{name}-%{version} $RPM_BUILD_ROOT%{_bindir}/gitlab-runner
+# backward compat name for previous pld packaging
+ln -s gitlab-runner $RPM_BUILD_ROOT%{_bindir}/gitlab-ci-multi-runner
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -82,3 +84,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md
 %attr(755,root,root) %{_bindir}/gitlab-ci-multi-runner
+%attr(755,root,root) %{_bindir}/gitlab-runner
