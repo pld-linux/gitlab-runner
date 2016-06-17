@@ -2,19 +2,18 @@
 %define	revision	88fc806
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
-Version:	1.1.3
-Release:	2
+Version:	1.2.0
+Release:	1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	3ce0499c2ee0bca486dcdaf1bb01d2d1
+# Source0-md5:	ca82170f56b9e334beffd664d509e5a3
 Source1:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt.tar.gz
 # Source1-md5:	d616dcc457a6ce69bed4af2ca08dfe0a
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 BuildRequires:	git-core
 BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567
-BuildRequires:	golang
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	golang >= 1.4
 BuildRequires:	rpmbuild(macros) >= 1.202
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -76,9 +75,10 @@ export PATH=$(pwd):$PATH
 LDFLAGS="-X main.NAME gitlab-ci-multi-runner -X main.VERSION %{version} -X main.REVISION %{revision}"
 %gobuild
 
-# verify version match
+# verify that version matches
 ./gitlab-ci-multi-runner-%{version} -v > v
-grep 'version %{version} ' v
+v=$(awk '$1 == "Version:" {print $2}' v)
+test "$v" = "%{version}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
