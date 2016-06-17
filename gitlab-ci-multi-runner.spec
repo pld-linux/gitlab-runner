@@ -72,7 +72,8 @@ grep 'version %{version} ' v
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_bindir}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir}}
+
 install -p %{name}-%{version} $RPM_BUILD_ROOT%{_bindir}/gitlab-runner
 # backward compat name for previous pld packaging
 ln -s gitlab-runner $RPM_BUILD_ROOT%{_bindir}/gitlab-ci-multi-runner
@@ -83,5 +84,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md
+%dir %attr(750,root,root) %{_sysconfdir}/gitlab-runner
 %attr(755,root,root) %{_bindir}/gitlab-ci-multi-runner
 %attr(755,root,root) %{_bindir}/gitlab-runner
