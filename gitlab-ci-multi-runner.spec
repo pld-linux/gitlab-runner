@@ -18,6 +18,7 @@ Requires:	ca-certificates
 Requires:	curl
 Requires:	git-core
 Requires:	tar
+Suggests:	docker >= 1.5.0
 ExclusiveArch:	%{ix86} %{x8664} %{arm}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
