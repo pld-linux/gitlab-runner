@@ -14,11 +14,21 @@ URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 BuildRequires:	git-core
 BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567
 BuildRequires:	golang
+BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.202
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
 Requires:	ca-certificates
 Requires:	curl
 Requires:	git-core
 Requires:	tar
 Suggests:	docker >= 1.5.0
+Provides:	group(gitlab-runner)
+Provides:	user(gitlab-runner)
 ExclusiveArch:	%{ix86} %{x8664} %{arm}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -72,14 +82,25 @@ grep 'version %{version} ' v
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir},/var/lib/gitlab-runner}
 
 install -p %{name}-%{version} $RPM_BUILD_ROOT%{_bindir}/gitlab-runner
+
 # backward compat name for previous pld packaging
 ln -s gitlab-runner $RPM_BUILD_ROOT%{_bindir}/gitlab-ci-multi-runner
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+%groupadd -g 330 gitlab-runner
+%useradd -u 330 -d /var/lib/gitlab-runner -g gitlab-runner -c "GitLab Runner" gitlab-runner
+
+%postun
+if [ "$1" = "0" ]; then
+	%userremove gitlab-runner
+	%groupremove gitlab-runner
+fi
 
 %files
 %defattr(644,root,root,755)
@@ -87,3 +108,4 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(750,root,root) %{_sysconfdir}/gitlab-runner
 %attr(755,root,root) %{_bindir}/gitlab-ci-multi-runner
 %attr(755,root,root) %{_bindir}/gitlab-runner
+%dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner
