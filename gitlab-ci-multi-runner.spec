@@ -82,7 +82,7 @@ test "$v" = "%{version}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir},/var/lib/gitlab-runner}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir},/var/lib/gitlab-runner/.gitlab-runner}
 
 install -p %{name}-%{version} $RPM_BUILD_ROOT%{_bindir}/gitlab-runner
 
@@ -109,3 +109,4 @@ fi
 %attr(755,root,root) %{_bindir}/gitlab-ci-multi-runner
 %attr(755,root,root) %{_bindir}/gitlab-runner
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner
+%dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner/.gitlab-runner
