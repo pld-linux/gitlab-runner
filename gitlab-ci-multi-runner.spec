@@ -23,6 +23,7 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires:	bash
 Requires:	ca-certificates
 Requires:	curl
 Requires:	git-core
