@@ -28,7 +28,7 @@ Requires:	ca-certificates
 Requires:	curl
 Requires:	git-core
 Requires:	tar
-Suggests:	docker >= 1.5.0
+Suggests:	docker >= 1.8
 Provides:	group(gitlab-runner)
 Provides:	user(gitlab-runner)
 ExclusiveArch:	%{ix86} %{x8664} %{arm}
