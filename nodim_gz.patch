@@ -1,0 +1,27 @@
+Last-Update: 2016-08-24
+Forwarded: not-needed
+Bug-Upstream: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/issues/1504
+Author: Dmitry Smirnov <onlyjob@debian.org>
+Description: do not incorporate Docker image into executable.
+
+--- gitlab-ci-multi-runner/executors/docker/executor_docker.go~	2016-09-22 20:36:49.000000000 +0300
++++ gitlab-ci-multi-runner/executors/docker/executor_docker.go	2016-09-22 22:46:50.385436324 +0300
+@@ -181,17 +181,11 @@
+ 		return
+ 	}
+ 
+-	data, err := Asset("prebuilt-" + architecture + prebuiltImageExtension)
+-	if err != nil {
+-		return nil, fmt.Errorf("Unsupported architecture: %s: %q", architecture, err.Error())
+-	}
+-
+ 	s.Debugln("Loading prebuilt image...")
+ 	err = s.client.ImportImage(docker.ImportImageOptions{
+ 		Repository:  prebuiltImageName + "-" + architecture,
+ 		Tag:         common.REVISION,
+-		Source:      "-",
+-		InputStream: bytes.NewBuffer(data),
++		Source:      "/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz",
+ 	})
+ 	if err != nil {
+ 		return
