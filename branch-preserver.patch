@@ -1,12 +1,11 @@
 --- gitlab-ci-multi-runner-1.6.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/shells/abstract.go~	2016-09-22 20:36:49.000000000 +0300
 +++ gitlab-ci-multi-runner-1.6.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/shells/abstract.go	2016-10-24 11:05:20.385999188 +0300
-@@ -99,7 +99,8 @@
+@@ -99,7 +99,7 @@
  
  func (b *AbstractShell) writeCheckoutCmd(w ShellWriter, build *common.Build) {
  	w.Notice("Checking out %s as %s...", build.Sha[0:8], build.RefName)
 -	w.Command("git", "checkout", "-q", build.Sha)
-+	w.Command("git", "checkout", "-q", build.RefName)
-+	w.Command("git", "reset", "--hard", "-q", build.Sha)
++	w.Command("git", "checkout", "-fq", "-B", build.RefName, build.Sha)
  }
  
  func (b *AbstractShell) cacheFile(build *common.Build, userKey string) (key, file string) {
