@@ -21,6 +21,7 @@ Source1:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker
 Source2:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt-arm.tar.xz
 # Source2-md5:	c0533c581624dcb33095f08f06e6a00b
 Patch0:		nodim_gz.patch
+Patch1:		branch-preserver.patch
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 BuildRequires:	git-core
 %{?with_bindata:BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567}
@@ -65,6 +66,7 @@ mv gitlab-ci-multi-runner-* src/%{import_path}
 cd src/%{import_path}
 
 %{!?with_bindata:%patch0 -p1}
+%patch1 -p5
 
 %if %{with bindata}
 install -d out/docker
