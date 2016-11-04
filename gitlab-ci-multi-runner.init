@@ -14,7 +14,7 @@ USER="gitlab-runner"
 GROUP="gitlab-runner"
 CHDIR="/var/lib/gitlab-runner"
 NAME="gitlab-ci-multi-runner"
-DAEMON="/usr/bin/gitlab-ci-multi-runner"
+DAEMON="/usr/bin/gitlab-runner"
 PIDFILE="/var/run/gitlab-ci-multi-runner.pid"
 LOGFILE="/var/log/gitlab-ci-multi-runner.log"
 
