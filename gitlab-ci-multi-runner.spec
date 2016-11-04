@@ -11,7 +11,7 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
 Version:	1.7.1
-Release:	1
+Release:	1.1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
@@ -20,6 +20,9 @@ Source1:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker
 # Source1-md5:	0d89c7578a0b5d22a4ae85dcb7d5b4f5
 Source2:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt-arm.tar.xz
 # Source2-md5:	c0533c581624dcb33095f08f06e6a00b
+Source3:	%{name}.init
+Source4:	%{name}.sysconfig
+Source5:	%{name}.service
 Patch0:		nodim_gz.patch
 Patch1:		branch-preserver.patch
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
@@ -108,9 +111,12 @@ test "$v" = "%{version}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir},/var/lib/gitlab-runner/.gitlab-runner}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/gitlab-runner,%{_bindir},/etc/{rc.d/init.d,sysconfig},%{systemdunitdir},/var/lib/gitlab-runner/.gitlab-runner}
 
 install -p src/%{import_path}/%{name} $RPM_BUILD_ROOT%{_bindir}/gitlab-runner
+install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}
 
 # backward compat name for previous pld packaging
 ln -s gitlab-runner $RPM_BUILD_ROOT%{_bindir}/gitlab-ci-multi-runner
@@ -136,9 +142,12 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/gitlab-ci-multi-runner
+%attr(754,root,root) /etc/rc.d/init.d/gitlab-ci-multi-runner
 %dir %attr(750,root,root) %{_sysconfdir}/gitlab-runner
 %attr(755,root,root) %{_bindir}/gitlab-ci-multi-runner
 %attr(755,root,root) %{_bindir}/gitlab-runner
+%{systemdunitdir}/gitlab-ci-multi-runner.service
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner/.gitlab-runner
 
