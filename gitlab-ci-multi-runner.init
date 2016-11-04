@@ -28,7 +28,6 @@ do_start() {
 		--background \
 		--make-pidfile \
 		--chuid "$USER:$GROUP" \
-		--no-close \
 		--exec "$DAEMON" -- "run" >> $LOGFILE 2>&1
 }
 
