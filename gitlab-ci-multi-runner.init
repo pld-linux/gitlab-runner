@@ -35,6 +35,14 @@ do_stop() {
 	start-stop-daemon --stop --pidfile "$PIDFILE" --user "$USER" --exec "$DAEMON" --quiet
 }
 
+okfail() {
+	if [ "$1" = 0 ]; then
+		ok
+	else
+		fail
+	fi
+}
+
 start() {
 	# Check if the service is already running?
 	if [ -f /var/lock/subsys/$NAME ]; then
@@ -45,6 +53,7 @@ start() {
 	msg_starting "$DESC"
 	do_start
 	RETVAL=$?
+	okfail $RETVAL
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$NAME
 }
 
@@ -57,6 +66,7 @@ stop() {
 	# Stop daemons.
 	msg_stopping "$DESC"
 	do_stop
+	okfail $?
 	rm -f /var/lock/subsys/$NAME
 }
 
@@ -95,7 +105,7 @@ case "$1" in
 	RETVAL=$?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
 	exit 3
 esac
 
