@@ -29,7 +29,9 @@ URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 BuildRequires:	git-core
 %{?with_bindata:BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567}
 BuildRequires:	golang >= 1.4
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.647
+Requires(post,preun):	/sbin/chkconfig
+Requires(post,preun,postun):	systemd-units >= 38
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
@@ -40,6 +42,8 @@ Requires:	bash
 Requires:	ca-certificates
 Requires:	curl
 Requires:	git-core
+Requires:	rc-scripts
+Requires:	systemd-units >= 0.38
 Requires:	tar
 Suggests:	docker >= 1.8
 Provides:	group(gitlab-runner)
@@ -138,6 +142,19 @@ if [ "$1" = "0" ]; then
 	%userremove gitlab-runner
 	%groupremove gitlab-runner
 fi
+%systemd_reload
+
+%post
+/sbin/chkconfig --add %{name}
+%service %{name} restart
+%systemd_post %{name}.service
+
+%preun
+if [ "$1" = "0" ]; then
+	%service -q %{name} stop
+	/sbin/chkconfig --del %{name}
+fi
+%systemd_preun %{name}.service
 
 %files
 %defattr(644,root,root,755)
