@@ -1,81 +1,103 @@
-#! /bin/bash
+#!/bin/sh
+#
+# gitlab-ci-multi-runner GitLab CI-Multi Runner
+#
+# chkconfig:	345 20 80
+# description:	Enables automatic start of runners at boot time in the background
+# processname:	gitlab-ci-multi-runner
 
-### BEGIN INIT INFO
-# Provides:          gitlab-ci-multi-runner
-# Required-Start:    $local_fs $remote_fs $network $syslog
-# Required-Stop:     $local_fs $remote_fs $network $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: GitLab CI-Multi Runner init.d script
-# Description: Enables automatic start of runners at boot time in the background.
-### END INIT INFO
+# Source function library
+. /etc/rc.d/init.d/functions
 
 DESC="GitLab CI-Multi Runner"
-USER="gitlab_ci_multi_runner"
-GROUP="gitlab_ci_multi_runner"
-CHDIR="~$USER"
+USER="gitlab-runner"
+GROUP="gitlab-runner"
+CHDIR="/var/lib/gitlab-runner"
 NAME="gitlab-ci-multi-runner"
 DAEMON="/usr/bin/gitlab-ci-multi-runner"
 PIDFILE="/var/run/gitlab-ci-multi-runner.pid"
 LOGFILE="/var/log/gitlab-ci-multi-runner.log"
 
-# Exit if the package is not installed
-if [ ! -x "$DAEMON" ]; then
-  echo "$DAEMON not present or not executable"
-  exit 1
-fi
-
 # Read configuration variable file if it is present
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
-
-# Define LSB log_* functions.
-. /lib/lsb/init-functions
-
-## Check to see if we are running as root first.
-if [ "$(id -u)" != "0" ]; then
-    echo "This script must be run as root"
-    exit 1
-fi
-
-eval CHDIR=$CHDIR
+[ -f /etc/sysconfig/$NAME ] && . /etc/sysconfig/$NAME
 
 do_start() {
-  start-stop-daemon --start \
-    --pidfile "$PIDFILE" \
-    --chdir "$CHDIR" \
-    --background \
-    --make-pidfile \
-    --chuid "$USER:$GROUP" \
-    --no-close \
-    --exec "$DAEMON" -- "run" &>> $LOGFILE
+	start-stop-daemon --start \
+		--pidfile "$PIDFILE" \
+		--chdir "$CHDIR" \
+		--background \
+		--make-pidfile \
+		--chuid "$USER:$GROUP" \
+		--no-close \
+		--exec "$DAEMON" -- "run" >> $LOGFILE 2>&1
 }
 
 do_stop() {
-  start-stop-daemon --stop --pidfile "$PIDFILE" --user "$USER" --exec "$DAEMON" --quiet
+	start-stop-daemon --stop --pidfile "$PIDFILE" --user "$USER" --exec "$DAEMON" --quiet
 }
 
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/$NAME ]; then
+		msg_already_running "$DESC"
+		return
+	fi
+
+	msg_starting "$DESC"
+	do_start
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$NAME
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/$NAME ]; then
+		msg_not_running "$DESC"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "$DESC"
+	do_stop
+	rm -f /var/lock/subsys/$NAME
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/$NAME ]; then
+		msg_not_running "$DESC"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
 case "$1" in
   start)
-    log_daemon_msg "Starting $DESC"
-    do_start
-    log_end_msg $?
-    ;;
+	start
+	;;
   stop)
-    log_daemon_msg "Stopping $DESC"
-    do_stop
-    log_end_msg $?
-    ;;
+	stop
+	;;
   restart)
-    $0 stop
-    $0 start
-    ;;
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
   status)
-    status_of_proc -p "$PIDFILE" "$DAEMON" "$DESC"
-    ;;
+	status --pidfile $pidfile $NAME
+	RETVAL=$?
+	;;
   *)
-    echo "Usage: sudo service gitlab-ci-multi-runner {start|stop|restart|status}" >&2
-    exit 1
-    ;;
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
+	exit 3
 esac
 
-exit 0
+exit $RETVAL
