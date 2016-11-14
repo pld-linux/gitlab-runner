@@ -40,7 +40,6 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	bash
 Requires:	ca-certificates
-Requires:	curl
 Requires:	git-core
 Requires:	rc-scripts
 Requires:	systemd-units >= 0.38
