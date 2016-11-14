@@ -1,11 +1,17 @@
---- gitlab-ci-multi-runner-1.7.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/shells/abstract.go~	2016-10-21 23:19:09.000000000 +0300
-+++ gitlab-ci-multi-runner-1.7.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/shells/abstract.go	2016-10-24 11:51:14.842526005 +0300
-@@ -99,7 +99,7 @@
+diff --git a/shells/abstract.go b/shells/abstract.go
+index e4ae2b0..f3cb56b 100644
+--- a/shells/abstract.go
++++ b/shells/abstract.go
+@@ -99,7 +99,11 @@ func (b *AbstractShell) writeFetchCmd(w ShellWriter, build *common.Build, projec
  
  func (b *AbstractShell) writeCheckoutCmd(w ShellWriter, build *common.Build) {
  	w.Notice("Checking out %s as %s...", build.Sha[0:8], build.RefName)
 -	w.Command("git", "checkout", "-f", "-q", build.Sha)
-+	w.Command("git", "checkout", "-fq", "-B", build.RefName, build.Sha)
++	if build.Tag {
++		w.Command("git", "checkout", "-f", "-q", build.Sha)
++	} else {
++		w.Command("git", "checkout", "-fq", "-B", build.RefName, build.Sha)
++	}
  }
  
  func (b *AbstractShell) cacheFile(build *common.Build, userKey string) (key, file string) {

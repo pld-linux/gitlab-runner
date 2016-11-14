@@ -11,7 +11,7 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
 Version:	1.7.1
-Release:	2
+Release:	3
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
@@ -28,7 +28,7 @@ Patch1:		branch-preserver.patch
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 BuildRequires:	git-core
 %{?with_bindata:BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567}
-BuildRequires:	golang >= 1.4
+BuildRequires:	golang >= 1.6
 BuildRequires:	rpmbuild(macros) >= 1.647
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
@@ -73,7 +73,7 @@ mv gitlab-ci-multi-runner-* src/%{import_path}
 cd src/%{import_path}
 
 %{!?with_bindata:%patch0 -p1}
-%patch1 -p5
+%patch1 -p1
 
 %if %{with bindata}
 install -d out/docker
