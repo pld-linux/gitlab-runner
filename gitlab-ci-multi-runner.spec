@@ -1,6 +1,3 @@
-#
-# Conditional build:
-%bcond_with	bindata		# embed docker images to binary (upstream compatible)
 
 # the revision for images
 # $ git fetch https://gitlab.com/gitlab-org/gitlab-ci-multi-runner refs/tags/v1.6.0
@@ -10,16 +7,12 @@
 %define revision 1.5.2
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
-Version:	1.7.1
-Release:	3
+Version:	1.8.0
+Release:	1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	ffc78abf7e8aa4aef2778aea14d5e6a0
-Source1:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt-x86_64.tar.xz
-# Source1-md5:	0d89c7578a0b5d22a4ae85dcb7d5b4f5
-Source2:	https://gitlab-ci-multi-runner-downloads.s3.amazonaws.com/master/docker/prebuilt-arm.tar.xz
-# Source2-md5:	c0533c581624dcb33095f08f06e6a00b
+# Source0-md5:	aed7c89fb2d0fa9c61c97d0206cc048b
 Source3:	%{name}.init
 Source4:	%{name}.sysconfig
 Source5:	%{name}.service
@@ -27,7 +20,6 @@ Patch0:		nodim_gz.patch
 Patch1:		branch-preserver.patch
 URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 BuildRequires:	git-core
-%{?with_bindata:BuildRequires:	go-bindata >= 3.0.7-1.a0ff2567}
 BuildRequires:	golang >= 1.6
 BuildRequires:	rpmbuild(macros) >= 1.647
 Requires(post,preun):	/sbin/chkconfig
@@ -45,6 +37,8 @@ Requires:	rc-scripts
 Requires:	systemd-units >= 0.38
 Requires:	tar
 Suggests:	docker >= 1.8
+Suggests:	gitlab-ci-multi-runner-image-arm
+Suggests:	gitlab-ci-multi-runner-image-x86_64
 Provides:	group(gitlab-runner)
 Provides:	user(gitlab-runner)
 ExclusiveArch:	%{ix86} %{x8664} %{arm}
@@ -71,16 +65,8 @@ install -d src/$(dirname %{import_path})
 mv gitlab-ci-multi-runner-* src/%{import_path}
 cd src/%{import_path}
 
-%{!?with_bindata:%patch0 -p1}
+%patch0 -p1
 %patch1 -p1
-
-%if %{with bindata}
-install -d out/docker
-ln -s %{SOURCE1} out/docker
-ln -s %{SOURCE2} out/docker
-# touch, otherwise make rules would download it nevertheless
-touch out/docker/prebuilt-*.tar.xz
-%endif
 
 # avoid docker being used even if executable found
 cat <<'EOF' > docker
@@ -94,12 +80,6 @@ chmod a+rx docker
 export GOPATH=$(pwd)
 cd src/%{import_path}
 export PATH=$(pwd):$PATH
-
-%if %{with bindata}
-# build docker bindata. if you forget this, you get such error:
-# executors/docker/executor_docker.go:180: undefined: Asset
-%{__make} docker
-%endif
 
 %{__make} version | tee version.txt
 
@@ -123,11 +103,6 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}
 
 # backward compat name for previous pld packaging
 ln -s gitlab-runner $RPM_BUILD_ROOT%{_bindir}/gitlab-ci-multi-runner
-
-%if %{without bindata}
-cp -p %{SOURCE1} $RPM_BUILD_ROOT/var/lib/gitlab-runner
-cp -p %{SOURCE2} $RPM_BUILD_ROOT/var/lib/gitlab-runner
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -166,8 +141,3 @@ fi
 %{systemdunitdir}/gitlab-ci-multi-runner.service
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner/.gitlab-runner
-
-%if %{without bindata}
-/var/lib/gitlab-runner/prebuilt-arm.tar.xz
-/var/lib/gitlab-runner/prebuilt-x86_64.tar.xz
-%endif
