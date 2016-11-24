@@ -1,10 +1,3 @@
-
-# the revision for images
-# $ git fetch https://gitlab.com/gitlab-org/gitlab-ci-multi-runner refs/tags/v1.6.0
-# $ git rev-list -n 1 --abbrev-commit FETCH_HEAD
-#define revision 76fdacd
-# No changes to image, so don't refetch it
-%define revision 1.5.2
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
 Version:	1.8.0
@@ -84,7 +77,7 @@ export PATH=$(pwd):$PATH
 %{__make} version | tee version.txt
 
 CN=gitlab.com/gitlab-org/gitlab-ci-multi-runner/common
-LDFLAGS="-X $CN.NAME=gitlab-ci-multi-runner -X $CN.VERSION=%{version} -X $CN.REVISION=%{revision}"
+LDFLAGS="-X $CN.NAME=gitlab-ci-multi-runner -X $CN.VERSION=%{version} -X $CN.REVISION=%{version}"
 %gobuild
 
 # verify that version matches
