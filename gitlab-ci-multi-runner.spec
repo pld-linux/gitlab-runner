@@ -1,11 +1,11 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
-Version:	1.10.0
+Version:	1.11.4
 Release:	1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	fb2034a3c976d0abc2ae1579df3adf93
+# Source0-md5:	4ba87a0c61e1d0f5a40a3365a2d5676f
 Source3:	%{name}.init
 Source4:	%{name}.sysconfig
 Source5:	%{name}.service
