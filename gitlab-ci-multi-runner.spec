@@ -1,11 +1,11 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-ci-multi-runner
-Version:	9.3.0
+Version:	9.5.0
 Release:	0.1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	9dcaa3e6e53296176f1f97f20fa46e74
+# Source0-md5:	e3267a1caac208a5a396deb873da99a3
 Source3:	%{name}.init
 Source4:	%{name}.sysconfig
 Source5:	%{name}.service
@@ -58,7 +58,7 @@ install -d src/$(dirname %{import_path})
 mv gitlab-ci-multi-runner-* src/%{import_path}
 cd src/%{import_path}
 
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 
 # avoid docker being used even if executable found
