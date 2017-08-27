@@ -4,9 +4,9 @@ Bug-Upstream: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/issues/1504
 Author: Dmitry Smirnov <onlyjob@debian.org>
 Description: do not incorporate Docker image into executable.
 
---- gitlab-ci-multi-runner/executors/docker/executor_docker.go~	2017-05-02 13:12:18.000000000 +0300
-+++ gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-05-16 08:08:28.042038918 +0300
-@@ -228,16 +228,11 @@
+--- gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-22 16:20:43.000000000 +0300
++++ gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-28 00:25:29.417833457 +0300
+@@ -222,17 +222,11 @@
  		return &image, nil
  	}
  
@@ -20,7 +20,8 @@ Description: do not incorporate Docker image into executable.
  	ref := prebuiltImageName
  	source := types.ImageImportSource{
 -		Source:     bytes.NewBuffer(data),
-+		Source:      "/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz",
- 		SourceName: "-",
+-		SourceName: "-",
++		SourceName: "/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz",
  	}
  	options := types.ImageImportOptions{
+ 		Tag: architecture + "-" + common.REVISION,
