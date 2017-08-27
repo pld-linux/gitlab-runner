@@ -4,10 +4,10 @@ Bug-Upstream: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/issues/1504
 Author: Dmitry Smirnov <onlyjob@debian.org>
 Description: do not incorporate Docker image into executable.
 
---- gitlab-ci-multi-runner/executors/docker/executor_docker.go~	2016-12-22 16:21:38.000000000 +0200
-+++ gitlab-ci-multi-runner/executors/docker/executor_docker.go	2016-12-23 14:41:59.425571451 +0200
-@@ -208,17 +208,11 @@
- 		return
+--- gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-22 16:20:43.000000000 +0300
++++ gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-28 00:25:29.417833457 +0300
+@@ -222,17 +222,11 @@
+ 		return &image, nil
  	}
  
 -	data, err := Asset("prebuilt-" + architecture + prebuiltImageExtension)
@@ -16,12 +16,12 @@ Description: do not incorporate Docker image into executable.
 -	}
 -
  	s.Debugln("Loading prebuilt image...")
- 	err = s.client.ImportImage(docker.ImportImageOptions{
- 		Repository:  prebuiltImageName,
- 		Tag:         architecture + "-" + common.REVISION,
--		Source:      "-",
--		InputStream: bytes.NewBuffer(data),
-+		Source:      "/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz",
- 	})
- 	if err != nil {
- 		return
+ 
+ 	ref := prebuiltImageName
+ 	source := types.ImageImportSource{
+-		Source:     bytes.NewBuffer(data),
+-		SourceName: "-",
++		SourceName: "/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz",
+ 	}
+ 	options := types.ImageImportOptions{
+ 		Tag: architecture + "-" + common.REVISION,
