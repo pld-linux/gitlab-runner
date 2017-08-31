@@ -81,6 +81,11 @@ condrestart() {
 	start
 }
 
+# run gitlab-runner register with proper uid/gid
+register() {
+	runuser -u "$USER" -g "$GROUP" gitlab-runner "$@"
+}
+
 RETVAL=0
 # See how we were called.
 case "$1" in
@@ -100,12 +105,15 @@ case "$1" in
   force-reload)
 	condrestart 7
 	;;
+  register)
+	register "$@"
+	;;
   status)
 	status --pidfile $PIDFILE $NAME
 	RETVAL=$?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|register|status}"
 	exit 3
 esac
 
