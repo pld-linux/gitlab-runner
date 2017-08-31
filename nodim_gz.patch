@@ -2,26 +2,34 @@ Last-Update: 2016-08-24
 Forwarded: not-needed
 Bug-Upstream: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/issues/1504
 Author: Dmitry Smirnov <onlyjob@debian.org>
+Author: Elan Ruusamäe <glen@pld-linux.org>
 Description: do not incorporate Docker image into executable.
 
---- gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-22 16:20:43.000000000 +0300
-+++ gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-28 00:25:29.417833457 +0300
-@@ -222,17 +222,11 @@
+--- gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-28 00:25:29.417833457 +0300
++++ gitlab-ci-multi-runner-9.5.0/src/gitlab.com/gitlab-org/gitlab-ci-multi-runner/executors/docker/executor_docker.go	2017-08-31 16:21:38.164066652 +0300
+@@ -6,6 +6,7 @@
+ 	"errors"
+ 	"fmt"
+ 	"io"
++	"io/ioutil"
+ 	"path"
+ 	"path/filepath"
+ 	"regexp"
+@@ -222,13 +222,13 @@
  		return &image, nil
  	}
  
 -	data, err := Asset("prebuilt-" + architecture + prebuiltImageExtension)
--	if err != nil {
++	s.Debugln("Loading prebuilt image...")
++
++	data, err := ioutil.ReadFile("/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz")
+ 	if err != nil {
 -		return nil, fmt.Errorf("Unsupported architecture: %s: %q", architecture, err.Error())
--	}
--
- 	s.Debugln("Loading prebuilt image...")
++		return nil, fmt.Errorf("Unable to read: %q", architecture, err.Error())
+ 	}
  
+-	s.Debugln("Loading prebuilt image...")
+-
  	ref := prebuiltImageName
  	source := types.ImageImportSource{
--		Source:     bytes.NewBuffer(data),
--		SourceName: "-",
-+		SourceName: "/var/lib/gitlab-runner/prebuilt-" + architecture + ".tar.xz",
- 	}
- 	options := types.ImageImportOptions{
- 		Tag: architecture + "-" + common.REVISION,
+ 		Source:     bytes.NewBuffer(data),
