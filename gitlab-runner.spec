@@ -1,17 +1,17 @@
 Summary:	The official GitLab CI runner written in Go
-Name:		gitlab-ci-multi-runner
-Version:	9.5.0
-Release:	2
+Name:		gitlab-runner
+Version:	10.0.0
+Release:	1
 License:	MIT
 Group:		Development/Building
-Source0:	https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	e3267a1caac208a5a396deb873da99a3
+Source0:	https://gitlab.com/gitlab-org/gitlab-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
+# Source0-md5:	767648a99974adf7c4efd4106f9afe69
 Source3:	%{name}.init
 Source4:	%{name}.sysconfig
 Source5:	%{name}.service
 Patch0:		nodim_gz.patch
 Patch1:		branch-preserver.patch
-URL:		https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
+URL:		https://gitlab.com/gitlab-org/gitlab-runner
 BuildRequires:	git-core
 BuildRequires:	golang >= 1.6
 BuildRequires:	rpmbuild(macros) >= 1.647
@@ -40,7 +40,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # go stuff
 %define _enable_debug_packages 0
 %define gobuild(o:) go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v %{?debug:-x} %{?**};
-%define import_path	gitlab.com/gitlab-org/gitlab-ci-multi-runner
+%define import_path	gitlab.com/gitlab-org/gitlab-runner
 
 %description
 This is the official GitLab Runner written in Go. It runs tests and
@@ -51,11 +51,11 @@ integration service included with GitLab that coordinates the testing.
 %setup -qc
 
 # for doc
-mv gitlab-ci-multi-runner-*/*.md .
+mv gitlab-runner-*/*.md .
 
 # don't you love go?
 install -d src/$(dirname %{import_path})
-mv gitlab-ci-multi-runner-* src/%{import_path}
+mv gitlab-runner-* src/%{import_path}
 cd src/%{import_path}
 
 %patch0 -p5
@@ -76,12 +76,12 @@ export PATH=$(pwd):$PATH
 
 %{__make} version | tee version.txt
 
-CN=gitlab.com/gitlab-org/gitlab-ci-multi-runner/common
-LDFLAGS="-X $CN.NAME=gitlab-ci-multi-runner -X $CN.VERSION=%{version} -X $CN.REVISION=%{version}"
+CN=gitlab.com/gitlab-org/gitlab-runner/common
+LDFLAGS="-X $CN.NAME=gitlab-runner -X $CN.VERSION=%{version} -X $CN.REVISION=%{version}"
 %gobuild
 
 # verify that version matches
-./gitlab-ci-multi-runner -v > v
+./gitlab-runner -v > v
 v=$(awk '$1 == "Version:" {print $2}' v)
 test "$v" = "%{version}"
 
@@ -93,9 +93,6 @@ install -p src/%{import_path}/%{name} $RPM_BUILD_ROOT%{_bindir}/gitlab-runner
 install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}
-
-# backward compat name for previous pld packaging
-ln -s gitlab-runner $RPM_BUILD_ROOT%{_bindir}/gitlab-ci-multi-runner
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -126,11 +123,10 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md
-%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/gitlab-ci-multi-runner
-%attr(754,root,root) /etc/rc.d/init.d/gitlab-ci-multi-runner
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/gitlab-runner
+%attr(754,root,root) /etc/rc.d/init.d/gitlab-runner
 %dir %attr(750,root,root) %{_sysconfdir}/gitlab-runner
-%attr(755,root,root) %{_bindir}/gitlab-ci-multi-runner
 %attr(755,root,root) %{_bindir}/gitlab-runner
-%{systemdunitdir}/gitlab-ci-multi-runner.service
+%{systemdunitdir}/gitlab-runner.service
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner
 %dir %attr(750,gitlab-runner,gitlab-runner) /var/lib/gitlab-runner/.gitlab-runner

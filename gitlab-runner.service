@@ -2,7 +2,7 @@
 # systemd unit file for CentOS 7, Ubuntu bleeding edge
 #
 [Unit]
-Description=GitLab CI-Multi Runner
+Description=GitLab Runner
 # start us only once the network and logging subsystems are available
 After=syslog.target network.target
 
@@ -13,7 +13,7 @@ After=syslog.target network.target
 Type=simple
 User=gitlab-runner
 Group=gitlab-runner
-ExecStart=/usr/bin/gitlab-ci-multi-runner run
+ExecStart=/usr/bin/gitlab-runner run
 
 # if we crash, restart
 RestartSec=1
@@ -22,7 +22,7 @@ Restart=on-failure
 # use syslog for logging
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=gitlab-ci-multi-runner
+SyslogIdentifier=gitlab-runner
 
 [Install]
 WantedBy=multi-user.target
