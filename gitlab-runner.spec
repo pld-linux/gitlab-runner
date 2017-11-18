@@ -34,6 +34,7 @@ Suggests:	gitlab-ci-multi-runner-image-arm
 Suggests:	gitlab-ci-multi-runner-image-x86_64
 Provides:	group(gitlab-runner)
 Provides:	user(gitlab-runner)
+Obsoletes:	gitlab-ci-multi-runner < 10.0
 ExclusiveArch:	%{ix86} %{x8664} %{arm}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
