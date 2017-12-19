@@ -30,8 +30,8 @@ Requires:	rc-scripts
 Requires:	systemd-units >= 0.38
 Requires:	tar
 Suggests:	docker >= 1.8
-Suggests:	gitlab-ci-multi-runner-image-arm
-Suggests:	gitlab-ci-multi-runner-image-x86_64
+Suggests:	gitlab-runner-image-arm
+Suggests:	gitlab-runner-image-x86_64
 Provides:	group(gitlab-runner)
 Provides:	user(gitlab-runner)
 Obsoletes:	gitlab-ci-multi-runner < 10.0
