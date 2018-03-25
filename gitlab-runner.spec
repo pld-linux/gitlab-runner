@@ -1,11 +1,11 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-runner
-Version:	10.5.0
+Version:	10.6.0
 Release:	1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	593d99a95ae60614583351bad1419543
+# Source0-md5:	5e369bc6d498cccce5d4448127e344f4
 Source3:	%{name}.init
 Source4:	%{name}.sysconfig
 Source5:	%{name}.service
@@ -13,7 +13,7 @@ Patch0:		nodim_gz.patch
 Patch1:		branch-preserver.patch
 URL:		https://gitlab.com/gitlab-org/gitlab-runner
 BuildRequires:	git-core
-BuildRequires:	golang >= 1.6
+BuildRequires:	golang >= 1.9.4
 BuildRequires:	rpmbuild(macros) >= 1.647
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
