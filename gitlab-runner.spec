@@ -1,11 +1,11 @@
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-runner
-Version:	10.6.0
+Version:	11.0.0
 Release:	1
 License:	MIT
 Group:		Development/Building
-Source0:	https://gitlab.com/gitlab-org/gitlab-runner/repository/archive.tar.gz?ref=v%{version}&/%{name}-%{version}.tar.gz
-# Source0-md5:	5e369bc6d498cccce5d4448127e344f4
+Source0:	https://gitlab.com/gitlab-org/gitlab-runner/repository/archive.tar.bz2?ref=v%{version}&/%{name}-%{version}.tar.bz2
+# Source0-md5:	d35d4d5c4d82bb68285c678be932299a
 Source3:	%{name}.init
 Source4:	%{name}.sysconfig
 Source5:	%{name}.service
