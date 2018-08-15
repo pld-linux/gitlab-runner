@@ -4,12 +4,12 @@
 
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-runner
-Version:	11.0.0
-Release:	1
+Version:	11.1.0
+Release:	0.1
 License:	MIT
 Group:		Development/Building
-Source0:	https://gitlab.com/gitlab-org/gitlab-runner/repository/archive.tar.bz2?ref=v%{version}&/%{name}-%{version}.tar.bz2
-# Source0-md5:	d35d4d5c4d82bb68285c678be932299a
+Source0:	https://gitlab.com/gitlab-org/gitlab-runner/-/archive/v%{version}/gitlab-runner-v%{version}.tar.bz2
+# Source0-md5:	5d92b8ca3fe5fdfeeb3bc2900c4aecd6
 %if %{with prebuilt}
 Source1:	https://gitlab-runner-downloads.s3.amazonaws.com/v%{version}/binaries/gitlab-runner-linux-amd64
 # Source1-md5:	2fc56f01f932a14a807e37195d08bcf2
@@ -67,7 +67,7 @@ install -d src/$(dirname %{import_path})
 mv gitlab-runner-* src/%{import_path}
 cd src/%{import_path}
 
-%patch0 -p5
+#%patch0 -p5
 %patch1 -p1
 
 # avoid docker being used even if executable found
