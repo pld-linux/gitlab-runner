@@ -78,7 +78,8 @@ export PATH=$(pwd):$PATH
 %{__make} version | tee version.txt
 
 CN=gitlab.com/gitlab-org/gitlab-runner/common
-LDFLAGS="-X $CN.NAME=gitlab-runner -X $CN.VERSION=%{version} -X $CN.REVISION=%{version}"
+DT=$(date -u +%%Y-%%m-%%dT%%H:%%M:%%S%%:z)
+LDFLAGS="-X $CN.VERSION=%{version} -X $CN.REVISION=v%{version} -X $CN.BRANCH=v%{version} -X $CN.BUILT=$DT"
 %gobuild
 
 # verify that version matches
