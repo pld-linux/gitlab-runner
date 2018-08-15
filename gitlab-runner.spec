@@ -2,10 +2,11 @@
 # Conditional build:
 %bcond_with	prebuilt		# use prebuilt binary
 
+%define		helper_revision	081978aa
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-runner
 Version:	11.1.0
-Release:	0.1
+Release:	0.4
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-runner/-/archive/v%{version}/gitlab-runner-v%{version}.tar.bz2
@@ -88,7 +89,7 @@ export PATH=$(pwd):$PATH
 
 CN=gitlab.com/gitlab-org/gitlab-runner/common
 DT=$(date -u +%%Y-%%m-%%dT%%H:%%M:%%S%%:z)
-LDFLAGS="-X $CN.VERSION=%{version} -X $CN.REVISION=v%{version} -X $CN.BRANCH=v%{version} -X $CN.BUILT=$DT"
+LDFLAGS="-X $CN.VERSION=%{version} -X $CN.REVISION=%{helper_revision} -X $CN.BRANCH=v%{version} -X $CN.BUILT=$DT"
 %gobuild
 %else
 install -p %{SOURCE1} gitlab-runner
