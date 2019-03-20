@@ -25,10 +25,9 @@ do_start() {
 	start-stop-daemon --start \
 		--pidfile "$PIDFILE" \
 		--chdir "$CHDIR" \
-		--background \
 		--make-pidfile \
 		--chuid "$USER:$GROUP" \
-		--exec "$DAEMON" -- "run" >> $LOGFILE 2>&1
+		--exec "$DAEMON" -- "run" >> $LOGFILE 2>&1 &
 }
 
 do_stop() {
