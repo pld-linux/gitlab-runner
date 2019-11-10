@@ -1,6 +1,6 @@
---- gitlab-ci-multi-runner/shells/abstract.go~	2017-05-02 13:12:18.000000000 +0300
-+++ gitlab-ci-multi-runner/shells/abstract.go	2017-05-16 08:10:46.528840805 +0300
-@@ -96,7 +96,11 @@
+--- gitlab-runner/shells/abstract.go~	2019-10-28 14:11:26.000000000 +0200
++++ gitlab-runner/shells/abstract.go	2019-11-10 02:47:02.568781451 +0200
+@@ -337,7 +337,11 @@
  
  func (b *AbstractShell) writeCheckoutCmd(w ShellWriter, build *common.Build) {
  	w.Notice("Checking out %s as %s...", build.GitInfo.Sha[0:8], build.GitInfo.Ref)
@@ -10,6 +10,6 @@
 +	} else {
 +		w.Command("git", "checkout", "-fq", "-B", build.GitInfo.Ref, build.GitInfo.Sha)
 +	}
- }
  
- func (b *AbstractShell) writeSubmoduleUpdateCmd(w ShellWriter, build *common.Build, recursive bool) {
+ 	cleanFlags := build.GetGitCleanFlags()
+ 	if len(cleanFlags) > 0 {
