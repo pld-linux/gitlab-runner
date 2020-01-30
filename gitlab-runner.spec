@@ -5,12 +5,12 @@
 %define		helper_revision	05161b14
 Summary:	The official GitLab CI runner written in Go
 Name:		gitlab-runner
-Version:	12.4.1
+Version:	12.7.1
 Release:	1
 License:	MIT
 Group:		Development/Building
 Source0:	https://gitlab.com/gitlab-org/gitlab-runner/-/archive/v%{version}/gitlab-runner-v%{version}.tar.bz2
-# Source0-md5:	9b74135f78d5b0f4c1df1f4117ae1eda
+# Source0-md5:	20c0e38abbb97ba2c6bc38fd338fc15f
 %if %{with prebuilt}
 Source1:	https://gitlab-runner-downloads.s3.amazonaws.com/v%{version}/binaries/gitlab-runner-linux-amd64
 # Source1-md5:	2fc56f01f932a14a807e37195d08bcf2
