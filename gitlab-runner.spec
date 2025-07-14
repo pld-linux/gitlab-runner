@@ -67,7 +67,7 @@ mv gitlab-runner-*/*.md .
 install -d src/$(dirname %{import_path})
 mv gitlab-runner-* src/%{import_path}
 
-%patch1 -p1
+%patch -P1 -p1
 
 cd src/%{import_path}
 
