@@ -71,7 +71,7 @@ mv gitlab-runner-* src/%{import_path}
 
 cd src/%{import_path}
 
-#%patch0 -p5
+#%%patch0 -p5
 
 # avoid docker being used even if executable found
 cat <<'EOF' > docker
